@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Jizo briefing</title>
+    <script>
+      {
+        let dirpr_library = null;
+        try{ dirpr_library = localStorage.getItem("RT.dirpr_library"); }catch(e){}
+        window.RT = window.RT || {};
+        RT.dirpr_library = RT.dirpr_library || dirpr_library || "https://style.ReasoningTechnology.com/Manuscript";
+        document.write('<script src="' + RT.dirpr_library + '/Core/RT-Manuscript_make.js"><\/script>');
+      }
+    </script>
+    <script>
+      window.RT.theme_preference('inverse_wheat');
+      window.RT.load('Layout/paginate');
+      window.RT.load('Layout/article_tech_ref');
+      window.RT.load('Element/theme_selector');
+    </script>
+  </head>
+  <body>
+    <RT·theme-selector></RT·theme-selector>
+    <RT·article>
+      <RT·title
+        author="RT"
+        date="2026-11-26"
+        title="Jizo briefing for a new session">
+      </RT·title>
+
+      <RT·TOC level="1"></RT·TOC>
+
+      <h1>Introduction</h1>
+
+      <p>Given two file trees, namely the <RT-term>source</RT-term> and the <RT-term>accumulator</RT-term> trees, Jizo is capable of listing the files in the source tree that are already in the accumulator. This result list is called the <RT-term>structured redundant files list</RT-term>.
+
+      <p>The Jizo tool includes functions that are given one or more such structured lists and then operate on them, or take other actions. For example, one such function removes the files on the structured list from a directory tree. This function then leave on the source tree only files not already found in the accumulator.</p>
+
+      <p>Reasoning technology uses Account-Tree as a sandboxing technology. Jizo is aware of the format of Account-Tree plugale storage devices and supports their use. One or both the source or accumulator can be such a source device. (Actually at this time, none of the archive trees that are to have their files to be accumulated are of the Account-Tree format, while the accumulator will be.)</p>
+
+      <p>Currently Jizo assumes the accumulator is on a single storage device.</p>
+
+      <h1>The RT environment</h1>
+
+      <p>Jizo is built on the Harmony skeleton, and follows the RT coding culture conventions.</p>
+
+      <h1>How Jizo works</h1>
+
+      <p>Jizo has a set of top level functions known collectively as the FI, for function interface. Running Jizo opens a Python shell with the Jizo library modules installed.  The administrator then calls Python functions to do work. These functions can have return values, and the administrator can assign these return values to variables, and then use those variables as arguments to further functions.</p>
+
+      <p>Jizo operates over the top of an sqlite database. The interface functions manipulate tables in the database. Return values are handles for things found in the database. Work in the Python shell can be interrupted at any time, and started up again later. A number of the FI functions are for reporting on the status of computation in the database so that an administrator can come in cold and continue work.</p>
+
+      <p>Thus there are three external data objects manipulated by Jizo, the source tree, the accumulator, and the database. However, the administrator who is manually interfacing with the FI functions inside the Python environment, is only aware of the FI functions, and the variables he creates.</p>
+
+      <h1>Mounting</h1>
+
+      <p>In addition to the Jizo command that opens the Jizo Python environment, there are is a mount command for mounting mounting storage devices. The mount command is given some options,  a device node, a mount point. The test versions accept a source directory in the testing environment instead of a device node. Devices (or test directories) are mounted so as to populate the source or accumulator trees. Jizo itself is agnostic as to how the trees get populated.</p>
+
+      <h1>Where Jizo keeps data</h1>
+
+      <p>When BTRFS is used, Jizo places its data, including the database, on the same subvolume as the accumulated data. In this manner if the subvolume is rolled back, the database remains in sync. For the case of a Account-Tree accumulator, Jizo data is stored at <RT-code>/home/Jizo_archive-tool_data</RT-code>. It is unfortunate to see a non home directory appear under <RT-code>/home</RT-code> but <RT-code>/home</RT-code> is the subvolume that the Jizo data tracks, so there is no other option.</p>
+
+      <p>Jizo commands will end up in the consumer directory after the build, as is conventional in a Harmony skeleton. Account-Tree systems typically do not have <RT-code>sudo</RT-code> so other than when testing, the mount command must be run as root.</p>
+
+      <h1>Test environment</h1>
+
+      <p>The test environment is encapsulated under the Harmony <RT-code>tester</RT-code> role directory. Tests run code found in the <RT-code>consumer</RT-code> directory.</p>
+
+      <h1>First FI</h1>
+
+      <p>The first FI will allow the facilitate the administrator in making a list of files in the source tree that are already in the accumulator. This is not a single step however.</p>
+
+      <p>There is a walk function that is passed as an argument another characterizing function. The characterizing function is then given the full path of each file on the walk.</p>
+
+      <p>An initial characterization will walk the accumulator and find the length of each file. The result will go into a table of results. Each result table row has an id, and a documentation string provided by the administrator. This table can be printed later by and administrator to see what he has. The return value is then an id into this table.</p>
+
+      <p>Another characterization will then walk the source tree, while keeping paths to files who's length is the same as one of the accumulator files lengths. This result also goes into the result table, with the source file path.</p>
+
+      <p>Then, another function looks at each file that has the same length as an accumulator file, and make a list of each that also has the same Sha256. The result is the structured redundant file list.</p>
+
+      <p>This gives you an idea how how it works. Some analysis will be required to get this right. Some functions will require table indexes as arguments.</p>
+
+      <h1>Passing info from Claude to the project</h1>
+      <p>Provide patch files that will be applied with `git apply X.patch`  make X `pass_N` where N runs serially.</p>
+       
+
+    </RT·article>
+  </body>
+</html>
