@@ -1,0 +1,30 @@
+
+# no archive or temporary files
+*.tar
+*.tgz
+*.zip
+*.
+temp.*
+**/scratchpad/*
+!**/scratchpad/.gitignore
+*.patch
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+.pytest_cache/
+
+# C / compiled artifacts
+*.o
+*.a
+*.out
+*.so
+
+# OS and editor backup files
+*~
+*.bak
+*.swp
+.DS_Store
